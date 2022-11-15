@@ -1,62 +1,26 @@
 <template>
   <div
-    class="w-40 flex flex-col justify-between bg-indigo-300 min-h-screen shadow-lg shadow-gray-700"
+    class="px-6 py-6 absolute w-full flex flex-col justify-between bg-primary-800 min-h-screen translate-x-full duration-300 ease-out z-40"
+    :class="{ 'translate-x-0 ': openMenu }"
   >
-    <h1
-      class="text-indigo-800 text-center text-2xl py-4 underline-offset-4 underline decoration-dashed"
-    >
-      Countries Quiz
-    </h1>
     <button
-      class="flex justify-evenly items-center mx-2 px-1 py-2.5 bg-indigo-600 text-indigo-100 rounded-md shadow-sm shadow-gray-700 border-dashed border border-indigo-100"
+      @click="emit('closeMenu', false)"
+      class="absolute w-8 h-8 right-6 top-4 z-50 p-0.5 border border-accent rounded-md"
     >
-      <IconNewGame class="w-5 h-5" />
-      New Game
+      <IconCross />
     </button>
-    <form>
-      <select name="options" >
-        <option value="Flag">Flags</option>
-        <option class="capitalize" value="Capital">capital cities</option>
-      </select>
-    </form>
 
-    <form>
-      <fieldset>
-        <legend>Choose a quiz by region</legend>
-        <label for="All">All</label>
-        <input type="radio" name="regions" id="All" />
-        <label for="Europe">Europe</label>
-        <input type="radio" name="regions" id="Europe" />
-        <label for="Asia">Asia</label>
-        <input type="radio" name="regions" id="Asia" />
-        <label for="Africa">Africa</label>
-        <input type="radio" name="regions" id="Africa" />
-        <label for="Americas">Americas</label>
-        <input type="radio" name="regions" id="Americas" />
-        <label for="Oceania">Oceania</label>
-        <input type="radio" name="regions" id="Oceania" />
-      </fieldset>
-    </form>
+    <MenuOptions @sendOptions="emit('sendOptions', $event)" />
 
-    <div class="text-gray-800 px-2 py-4 flex flex-col items-center gap-2">
-      <div
-        class="border py-4 border-indigo-600 w-full flex justify-evenly items-center gap-1 shadow-sm shadow-gray-700"
-      >
-        <IconTime class="w-5 h-5" />
-        <p>02:30</p>
-      </div>
-      <div
-        class="border border-indigo-600 w-full flex flex-col items-center gap-1 shadow-sm shadow-gray-700"
-      >
-        <p>Score</p>
-        <p>10 / 20</p>
-      </div>
-    </div>
+    <MenuOptionsRegion @send-options-region="emit('optionsRegion', $event)" />
+
+    <QuizStartGameBtn title="New Game" />
   </div>
 </template>
 
-<script>
-export default {};
+<script setup>
+const props = defineProps({ openMenu: { type: Boolean } });
+const emit = defineEmits(["closeMenu", "optionsRegion", "sendOptions"]);
 </script>
 
 <style scoped></style>
