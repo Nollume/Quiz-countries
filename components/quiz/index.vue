@@ -12,12 +12,15 @@
         :src="countries[countryIndex].flags.svg"
         alt="flag"
       />
-      <QuizStartGameBtn
-        title="Start Game"
-        class="w-full text-base"
-        v-else
-        @click="getRandomCountry"
-      />
+      <div v-else class="w-full capitalize text-base">
+        <p>Settings: {{ options }}</p>
+        <p class="mb-4">Region: {{ region }}</p>
+        <QuizStartGameBtn
+          @click="startNewGame"
+          title="Start Game"
+          class="w-full"
+        />
+      </div>
     </div>
     <div
       v-else
@@ -26,20 +29,28 @@
       <p v-if="countryIndex !== null">
         {{ countries[countryIndex].capital[0] }}
       </p>
-      <QuizStartGameBtn
-        title="Start Game"
-        class="w-full text-base"
-        v-else
-        @click="getRandomCountry"
-      />
+      <div v-else class="w-full capitalize text-base">
+        <p>Settings: {{ options }}</p>
+        <p class="mb-4">Region: {{ region }}</p>
+        <QuizStartGameBtn
+          @click="startNewGame"
+          title="Start Game"
+          class="w-full"
+        />
+      </div>
     </div>
-    <div v-if="countryIndex !== null">
-      <progress
-        max="100"
-        value="80"
-        class="w-full"
+    <div v-if="gameIsGoing" class="flex items-center justify-between">
+      <p>correct: {{ correct }}</p>
+      <p>{{ numberOfRound }} / 20</p>
+    </div>
+    <div
+      class="relative w-full h-3 bg-primary-900 border border-accent"
+      :class="{ hidden: !gameIsGoing }"
+    >
+      <div
+        class="absolute w-full inset-0 bg-accent origin-left"
         ref="progressBar"
-      ></progress>
+      ></div>
     </div>
     <ul class="grid gap-1 mb-8">
       <li
@@ -60,10 +71,15 @@
 const countryIndex = ref(null);
 const notRepetiveCountries = ref([]);
 const optionsCountries = ref([]);
-const numberOfRound = ref(1);
+const numberOfRound = ref(0);
 const progressBar = ref(null);
+const gameIsGoing = ref(false);
+let time = ref(1);
+const correct = ref(0);
 const url = ref("/api/countries");
+let timeout;
 
+const emit = defineEmits(["closeMenu", "startGame"]);
 const props = defineProps({
   options: String,
   region: String,
@@ -80,12 +96,37 @@ const getRandomIndexCountry = () => {
 const shuffleOptions = () => {
   return optionsCountries.value.sort(() => Math.random() - 0.5);
 };
+const handleProgressBar = () => {
+  if (time.value.toFixed(2) >= 0) {
+    progressBar.value.style.transform = `scaleX(${time.value})`;
+    progressBar.value.style.backgroundColor = "rgb(55 48 163)";
+    time.value -= 0.025;
+
+    if (time.value <= 0.2) {
+      progressBar.value.style.backgroundColor = "red";
+    }
+    timeout = setTimeout(handleProgressBar, 250);
+  } else {
+    clearTimeout(timeout);
+    if (numberOfRound.value < 20) {
+      setTimeout(getRandomCountry, 5000);
+    }
+  }
+};
+
+const startNewGame = () => {
+  gameIsGoing.value = true;
+  emit("closeMenu", false);
+  reset();
+  getRandomCountry();
+};
 
 const getRandomCountry = () => {
+  time.value = 1;
+  numberOfRound.value++;
   if (notRepetiveCountries.value.length === countries.value.length) return;
-
+  handleProgressBar();
   getRandomIndexCountry();
-
   if (notRepetiveCountries.value.includes(countryIndex.value)) {
     getRandomCountry();
     return;
@@ -136,7 +177,12 @@ const reset = () => {
   countryIndex.value = null;
   notRepetiveCountries.value.length = 0;
   optionsCountries.value.length = 0;
+  numberOfRound.value = 0;
 };
+
+onMounted(() => {
+  emit("startGame", startNewGame);
+});
 
 watchEffect(() => {
   if (props.region === "all") {

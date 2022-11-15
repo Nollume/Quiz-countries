@@ -14,12 +14,12 @@
 
     <MenuOptionsRegion @send-options-region="emit('optionsRegion', $event)" />
 
-    <QuizStartGameBtn title="New Game" />
+    <QuizStartGameBtn title="New Game" @click="startGame" />
   </div>
 </template>
 
 <script setup>
-const props = defineProps({ openMenu: { type: Boolean } });
+const props = defineProps({ openMenu: { type: Boolean }, startGame: Function });
 const emit = defineEmits(["closeMenu", "optionsRegion", "sendOptions"]);
 </script>
 

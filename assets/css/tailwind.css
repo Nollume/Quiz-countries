@@ -15,6 +15,7 @@
   }
   .options::-ms-expand {
     display: none;
+    
   }
   .options option {
     @apply appearance-none text-primary-100 bg-primary-900;

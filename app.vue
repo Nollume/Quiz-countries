@@ -5,7 +5,7 @@
     <div
       v-if="!openMenu"
       @click="openMenu = true"
-      class="absolute w-6 h-6 right-6 top-4 z-30 cursor-pointer"
+      class="absolute w-8 h-8 right-6 top-4 z-50 p-0.5 border border-accent rounded-md"
     >
       <IconMenu />
     </div>
@@ -14,12 +14,19 @@
       @closeMenu="openMenu = $event"
       @optionsRegion="region = $event"
       @sendOptions="options = $event"
+      :startGame="startGame"
     />
-    <Quiz :region="region" :options="options" />
+    <Quiz
+      :region="region"
+      :options="options"
+      @closeMenu="openMenu = $event"
+      @startGame="startGame = $event"
+    />
   </div>
 </template>
 
 <script setup>
+const startGame = ref(null);
 const openMenu = ref(false);
 const region = ref("all");
 const options = ref("flag");
