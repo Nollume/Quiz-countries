@@ -5,7 +5,7 @@
     <div
       v-if="!openMenu"
       @click="openMenu = true"
-      class="absolute w-8 h-8 right-6 top-4 z-50 p-0.5 border border-accent rounded-md"
+      class="absolute w-8 h-8 right-6 top-4 z-50 p-0.5 border border-accent rounded-md cursor-pointer"
     >
       <IconMenu />
     </div>

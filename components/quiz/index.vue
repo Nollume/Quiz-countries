@@ -52,18 +52,27 @@
         ref="progressBar"
       ></div>
     </div>
-    <ul class="grid gap-1 mb-8">
+    <ul class="grid gap-1 mb-4">
       <li
-        class="flex items-center gap-2 border border-accent rounded-md bg-primary-900"
+        class="relative flex items-center gap-2 border border-accent rounded-md bg-primary-900 duration-300 active:opacity-80 hover:opacity-80 overflow-hidden cursor-pointer"
         v-for="(country, index) in optionsCountries"
         :key="country"
+        :data-country="country"
+        @click.once="userReaction(country, $event)"
       >
         <div class="bg-accent h-full py-2 px-2 grid place-items-center">
-          <p>{{ OptionsLetters(index) }}</p>
+          <p>
+            {{ OptionsLetters(index) }}
+          </p>
         </div>
-        <p>{{ countries[country].name?.common }}</p>
+        <p>
+          {{ countries[country].name?.common }}
+        </p>
       </li>
     </ul>
+    <button class="self-center mb-8 bg-accent py-2 px-4 rounded-md">
+      Next question >>
+    </button>
   </div>
 </template>
 
@@ -76,8 +85,10 @@ const progressBar = ref(null);
 const gameIsGoing = ref(false);
 let time = ref(1);
 const correct = ref(0);
+const userAnswered = ref(false);
 const url = ref("/api/countries");
 let timeout;
+let timeout2;
 
 const emit = defineEmits(["closeMenu", "startGame"]);
 const props = defineProps({
@@ -88,6 +99,7 @@ const props = defineProps({
 const { data: countries, error, pending, refresh } = useFetch(url);
 
 const getRandomIndexCountry = () => {
+  countryIndex.value = null;
   return (countryIndex.value = Math.floor(
     Math.random() * countries.value.length
   ));
@@ -103,18 +115,44 @@ const handleProgressBar = () => {
     time.value -= 0.025;
 
     if (time.value <= 0.2) {
-      progressBar.value.style.backgroundColor = "red";
+      progressBar.value.style.backgroundColor = "rgb(239 68 68)";
     }
     timeout = setTimeout(handleProgressBar, 250);
   } else {
     clearTimeout(timeout);
     if (numberOfRound.value < 20) {
-      setTimeout(getRandomCountry, 5000);
+      timeout2 = setTimeout(getRandomCountry, 5000);
+    }
+  }
+};
+
+const userReaction = (country, e) => {
+  if (!userAnswered.value) {
+    userAnswered.value = true;
+    clearTimeout(timeout);
+    const li = e.target.closest("li");
+    let allLi = document.querySelectorAll("li");
+    allLi = Array.from(allLi);
+    allLi.forEach((list) => (list.style.backgroundColor = "rgb(23 23 23)"));
+
+    if (country === countryIndex.value) {
+      correct.value++;
+      li.style.backgroundColor = "rgb(22 163 74)";
+      // timeout2 = setTimeout(getRandomCountry, 5000);
+    } else {
+      const correctAnswer = allLi.find((list) => {
+        return +list.dataset.country === countryIndex.value;
+      });
+      li.style.backgroundColor = "rgb(239 68 68)";
+      correctAnswer.style.backgroundColor = "green";
+      // timeout2 = setTimeout(getRandomCountry, 5000);
     }
   }
 };
 
 const startNewGame = () => {
+  clearTimeout(timeout);
+  clearTimeout(timeout2);
   gameIsGoing.value = true;
   emit("closeMenu", false);
   reset();
@@ -123,10 +161,13 @@ const startNewGame = () => {
 
 const getRandomCountry = () => {
   time.value = 1;
+  userAnswered.value = false;
   numberOfRound.value++;
+  clearTimeout(timeout2);
   if (notRepetiveCountries.value.length === countries.value.length) return;
   handleProgressBar();
   getRandomIndexCountry();
+
   if (notRepetiveCountries.value.includes(countryIndex.value)) {
     getRandomCountry();
     return;
@@ -178,6 +219,7 @@ const reset = () => {
   notRepetiveCountries.value.length = 0;
   optionsCountries.value.length = 0;
   numberOfRound.value = 0;
+  correct.value = 0;
 };
 
 onMounted(() => {
