@@ -2,64 +2,21 @@
   <div
     class="w-full min-h-screen px-6 flex flex-col gap-2 justify-between relative"
   >
-    <div
-      v-if="options === 'flags'"
-      class="mb-auto p-4 aspect-video mt-16 text-2xl grid place-items-center border border-accent rounded-md bg-primary-900"
-    >
-      <img
-        v-if="countryIndex !== null"
-        class="w-full"
-        :src="countries[countryIndex].flags.svg"
-        alt="flag"
-      />
-      <div v-else class="w-full capitalize text-base">
-        <p>Settings: {{ options }}</p>
-        <p class="mb-4">Region: {{ region }}</p>
-        <QuizStartGameBtn
-          @click="startNewGame"
-          title="Start Game"
-          class="w-full"
-        />
-      </div>
-    </div>
-    <div
-      v-else
-      class="mb-auto p-4 aspect-video mt-16 text-2xl grid place-items-center border border-accent rounded-md bg-primary-900"
-    >
-      <p v-if="countryIndex !== null">
-        {{ countries[countryIndex].capital[0] }}
-      </p>
-      <div v-else class="w-full capitalize text-base">
-        <p>Settings: {{ options }}</p>
-        <p class="mb-4">Region: {{ region }}</p>
-        <QuizStartGameBtn
-          @click="startNewGame"
-          title="Start Game"
-          class="w-full"
-        />
-      </div>
-    </div>
-    <div
-      v-if="quizEnd"
-      class="flex flex-col gap-2 items-center border border-accent rounded-md bg-primary-900 p-4 mb-auto"
-    >
-      <h3 class="text-xl">Your Score: {{ correct }} / 20</h3>
-      <p v-if="correct <= 5">You should improve, very poor result...</p>
-      <p v-else-if="correct <= 10">
-        The average result, you still have room for improvement...
-      </p>
-      <p v-else-if="correct <= 15">Good result, keep it up...</p>
-      <p v-else-if="correct <= 20">
-        Wow, what an incredible result! You are the best!!!
-      </p>
-    </div>
-    <div v-if="countryIndex !== null" class="flex items-center justify-between">
-      <p>Score: {{ correct }}</p>
-      <p class="flex items-center gap-2" v-show="timeOut">
-        Time out! <IconTime class="w-6 h-6" />
-      </p>
-      <p>{{ numberOfRound }} / 20</p>
-    </div>
+    <QuizHintContainer
+      :options="options"
+      :region="region"
+      :countryIndex="countryIndex"
+      :countries="countries"
+      :startNewGame="startNewGame"
+    />
+    <QuizEndResult v-if="quizEnd" :correct="correct" />
+    <QuizScoreTimeInfo
+      v-if="countryIndex !== null"
+      :timeOut="timeOut"
+      :correct="correct"
+      :numberOfRound="numberOfRound"
+    />
+    <!-- progressBar -->
     <div
       class="relative w-full h-3 bg-primary-900 border border-accent"
       :class="{ hidden: countryIndex === null }"
@@ -69,42 +26,20 @@
         ref="progressBar"
       ></div>
     </div>
-    <ul v-if="countryIndex !== null" class="grid gap-1 mb-4">
-      <li
-        class="relative flex items-center gap-2 border border-accent rounded-md bg-primary-900 duration-300 active:opacity-80 hover:opacity-80 overflow-hidden cursor-pointer"
-        v-for="(country, index) in optionsCountries"
-        :key="country"
-        :data-country="country"
-        @click="userReaction(country, $event)"
-      >
-        <div class="bg-accent h-full py-2 px-2 grid place-items-center">
-          <p>
-            {{ OptionsLetters(index) }}
-          </p>
-        </div>
-        <p>
-          {{ countries[country].name?.common }}
-        </p>
-      </li>
-    </ul>
-    <button
-      v-if="countryIndex !== null && gameIsGoing"
-      @click="getRandomCountry"
-      class="self-center mb-8 bg-accent py-2 px-4 rounded-md"
-      :disabled="!nextQuestion"
-      :class="{ 'opacity-20': !nextQuestion }"
-    >
-      Next question >>
-    </button>
-    <div
-      v-if="countryIndex !== null && !gameIsGoing"
-      class="flex flex-row justify-between items-center mb-8"
-    >
-      <p>The quiz has ended!</p>
-      <button @click="summary" class="bg-accent py-2 px-4 rounded-md">
-        Summary >>
-      </button>
-    </div>
+
+    <QuizOptionsContainer
+      v-if="countryIndex !== null"
+      :optionsCountries="optionsCountries"
+      :countries="countries"
+      :userReaction="userReaction"
+    />
+    <QuizBtnsNextTask
+      :countryIndex="countryIndex"
+      :gameIsGoing="gameIsGoing"
+      :getRandomCountry="getRandomCountry"
+      :nextQuestion="nextQuestion"
+      :summary="summary"
+    />
   </div>
 </template>
 
@@ -124,7 +59,7 @@ const nextQuestion = ref(false);
 const quizEnd = ref(false);
 let timeOutClear;
 
-const emit = defineEmits(["closeMenu", "startGame", "gameIsGoing"]);
+const emit = defineEmits(["closeMenu", "startGame", "stopGame", "gameIsGoing"]);
 const props = defineProps({
   options: String,
   region: String,
@@ -268,13 +203,6 @@ const getRandomOptions = () => {
   shuffleOptions();
 };
 
-const OptionsLetters = (index) => {
-  if (index === 0) return "A";
-  else if (index === 1) return "B";
-  else if (index === 2) return "C";
-  else return "D";
-};
-
 const reset = () => {
   countryIndex.value = null;
   notRepetiveCountries.value.length = 0;
@@ -283,6 +211,12 @@ const reset = () => {
   correct.value = 0;
   quizEnd.value = false;
 };
+const stopGame = () => {
+  reset();
+  emit("closeMenu", false);
+  gameIsGoing.value = false;
+  emit("gameIsGoing", gameIsGoing.value);
+};
 const summary = () => {
   countryIndex.value = null;
   quizEnd.value = true;
@@ -290,6 +224,7 @@ const summary = () => {
 
 onMounted(() => {
   emit("startGame", startNewGame);
+  emit("stopGame", stopGame);
 });
 
 watchEffect(() => {

@@ -15,6 +15,7 @@
       @optionsRegion="region = $event"
       @sendOptions="options = $event"
       :startGame="startGame"
+      :stopGame="stopGame"
       :gameIsGoing="gameIsGoing"
     />
     <Quiz
@@ -22,6 +23,7 @@
       :options="options"
       @closeMenu="openMenu = $event"
       @startGame="startGame = $event"
+      @stopGame="stopGame = $event"
       @gameIsGoing="gameIsGoing = $event"
     />
   </div>
@@ -29,6 +31,7 @@
 
 <script setup>
 const startGame = ref(null);
+const stopGame = ref(null);
 const openMenu = ref(false);
 const gameIsGoing = ref(false);
 const region = ref("all");

@@ -10,11 +10,26 @@
       <IconCross />
     </button>
 
-    <MenuOptions :gameIsGoing="gameIsGoing" @sendOptions="emit('sendOptions', $event)" />
+    <MenuOptions
+      :gameIsGoing="gameIsGoing"
+      @sendOptions="emit('sendOptions', $event)"
+    />
 
-    <MenuOptionsRegion :gameIsGoing="gameIsGoing" @send-options-region="emit('optionsRegion', $event)" />
-
-    <QuizStartGameBtn class="z-900" title="New Game" @click="startGame" />
+    <MenuOptionsRegion
+      :gameIsGoing="gameIsGoing"
+      @send-options-region="emit('optionsRegion', $event)"
+    />
+    <div class="flex flex-col gap-2">
+      <QuizStartGameBtn v-if="gameIsGoing" title="Stop Game" @click="stopGame">
+        <IconStop
+          class="w-6 h-6 absolute text-primary-100 right-4 top-1/2 -translate-y-1/2"
+        />
+      </QuizStartGameBtn>
+      <QuizStartGameBtn title="New Game" @click="startGame"
+        ><IconNewGame
+          class="w-6 h-6 absolute text-primary-100 right-4 top-1/2 -translate-y-1/2"
+      /></QuizStartGameBtn>
+    </div>
   </div>
 </template>
 
@@ -22,6 +37,7 @@
 const props = defineProps({
   openMenu: { type: Boolean },
   startGame: Function,
+  stopGame: Function,
   gameIsGoing: Boolean,
 });
 const emit = defineEmits(["closeMenu", "optionsRegion", "sendOptions"]);
