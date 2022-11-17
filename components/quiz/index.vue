@@ -223,7 +223,6 @@ const getRandomCountry = () => {
   userAnswered.value = false;
   nextQuestion.value = false;
   timeOut.value = false;
-  numberOfRound.value++;
 
   if (notRepetiveCountries.value.length === countries.value.length) return;
   handleProgressBar();
@@ -234,6 +233,7 @@ const getRandomCountry = () => {
     return;
   }
 
+  numberOfRound.value++;
   notRepetiveCountries.value.push(countryIndex.value);
 
   optionsCountries.value.length = 0;
