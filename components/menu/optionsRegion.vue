@@ -11,6 +11,7 @@
       <div class="flex flex-row-reverse items-center justify-end gap-2">
         <label class="cursor-pointer" for="All">All</label>
         <input
+          class="accent-accent"
           type="radio"
           name="regions"
           value="all"
@@ -22,6 +23,7 @@
       <div class="flex flex-row-reverse items-center justify-end gap-2">
         <label class="cursor-pointer" for="Europe">Europe</label>
         <input
+          class="accent-accent"
           type="radio"
           name="regions"
           value="europe"
@@ -32,6 +34,7 @@
       <div class="flex flex-row-reverse items-center justify-end gap-2">
         <label class="cursor-pointer" for="Asia">Asia</label>
         <input
+          class="accent-accent"
           type="radio"
           name="regions"
           value="asia"
@@ -42,6 +45,7 @@
       <div class="flex flex-row-reverse items-center justify-end gap-2">
         <label class="cursor-pointer" for="Africa">Africa</label>
         <input
+          class="accent-accent"
           type="radio"
           name="regions"
           value="africa"
@@ -52,6 +56,7 @@
       <div class="flex flex-row-reverse items-center justify-end gap-2">
         <label class="cursor-pointer" for="Americas">Americas</label>
         <input
+          class="accent-accent"
           type="radio"
           name="regions"
           value="americas"
@@ -62,6 +67,7 @@
       <div class="flex flex-row-reverse items-center justify-end gap-2">
         <label class="cursor-pointer" for="Oceania">Oceania</label>
         <input
+          class="accent-accent"
           type="radio"
           name="regions"
           value="oceania"

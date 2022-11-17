@@ -4,9 +4,7 @@
       v-if="gameIsGoing"
       class="absolute inset-0 z-50 bg-primary-800/50 rounded-md"
     ></div>
-    <IconArrow
-      class="w-6 h-6 absolute text-primary-100 right-4 top-1/2 -translate-y-1/2 rotate-90"
-    />
+
     <select
       @change="emit('sendOptions', options)"
       class="options"
@@ -24,6 +22,7 @@ const options = ref("flags");
 const props = defineProps({
   gameIsGoing: Boolean,
 });
+
 const emit = defineEmits(["sendOptions"]);
 </script>
 

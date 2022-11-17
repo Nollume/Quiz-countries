@@ -11,11 +11,13 @@
 
 @layer components {
   .options {
-    @apply appearance-none border-0 outline-none w-full rounded-md h-10 pr-16 pl-4 bg-primary-900 text-primary-100 cursor-pointer shadow-sm focus:outline-none;
+    @apply appearance-none border-0 outline-none  w-full rounded-md h-10 pr-16 pl-4  text-primary-100 cursor-pointer shadow-sm focus:outline-none;
+    background: url("../arrows.svg") no-repeat right 0.8rem center / 1.4rem
+      rgb(23 23 23);
   }
+
   .options::-ms-expand {
     display: none;
-    
   }
   .options option {
     @apply appearance-none text-primary-100 bg-primary-900;
