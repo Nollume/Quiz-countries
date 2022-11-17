@@ -1,5 +1,9 @@
 <template>
-  <form>
+  <form class="relative">
+    <div
+      v-if="gameIsGoing"
+      class="absolute inset-0 z-50 bg-primary-800/50 rounded-md"
+    ></div>
     <fieldset
       class="border border-accent rounded-md p-2 bg-primary-900 flex flex-col"
     >
@@ -72,7 +76,9 @@
 <script setup>
 const region = ref("all");
 const emit = defineEmits(["sendOptionsRegion"]);
-
+const props = defineProps({
+  gameIsGoing: Boolean,
+});
 watch(region, () => {
   emit("sendOptionsRegion", region.value);
 });
