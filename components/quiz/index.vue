@@ -1,6 +1,7 @@
 <template>
   <div
-    class="w-full min-h-screen px-6 flex flex-col gap-2 justify-between relative"
+    v-if="!error"
+    class="w-full min-h-screen px-6 flex flex-col gap-2 justify-between relative sm:px-10 sm:grid sm:grid-cols-2 sm:gap-x-4 sm:gap-y-2 sm:py-10"
   >
     <QuizHintContainer
       :options="options"
@@ -8,17 +9,20 @@
       :countryIndex="countryIndex"
       :countries="countries"
       :startNewGame="startNewGame"
+      :pending="pending"
+      class="sm:row-start-3 sm:row-span-2"
     />
-    <QuizEndResult v-if="quizEnd" :correct="correct" />
+    <QuizEndResult v-if="quizEnd" :correct="correct" class="sm:col-span-2" />
     <QuizScoreTimeInfo
       v-if="countryIndex !== null"
       :timeOut="timeOut"
       :correct="correct"
       :numberOfRound="numberOfRound"
+      class="sm:col-span-2"
     />
     <!-- progressBar -->
     <div
-      class="relative w-full h-3 bg-primary-900 border border-accent"
+      class="relative w-full h-3 bg-primary-900 border border-accent sm:row-start-1 sm:col-span-2 sm:mt-4"
       :class="{ hidden: countryIndex === null }"
     >
       <div
@@ -32,6 +36,7 @@
       :optionsCountries="optionsCountries"
       :countries="countries"
       :userReaction="userReaction"
+      class="sm:self-start"
     />
     <QuizBtnsNextTask
       :countryIndex="countryIndex"
@@ -39,8 +44,10 @@
       :getRandomCountry="getRandomCountry"
       :nextQuestion="nextQuestion"
       :summary="summary"
+      class="sm:col-start-2 sm:self-start"
     />
   </div>
+  <div v-else class="w-full grid place-items-center">{{ error.message }}</div>
 </template>
 
 <script setup>
@@ -65,7 +72,7 @@ const props = defineProps({
   region: String,
 });
 
-const { data: countries, error, refresh } = useFetch(url);
+const { data: countries, error, refresh, pending } = useFetch(url);
 
 const getRandomIndexCountry = () => {
   return Math.floor(Math.random() * countries.value.length);
@@ -230,17 +237,7 @@ onMounted(() => {
 watchEffect(() => {
   if (props.region === "all") {
     url.value = "/api/countries";
-  } else if (props.region === "europe") {
-    url.value = "/api/europe";
-  } else if (props.region === "oceania") {
-    url.value = "/api/oceania";
-  } else if (props.region === "asia") {
-    url.value = "/api/asia";
-  } else if (props.region === "africa") {
-    url.value = "/api/africa";
-  } else {
-    url.value = "/api/americas";
-  }
+  } else url.value = `/api/region/${props.region}`;
   reset();
   refresh();
 });

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="px-6 py-6 absolute w-full flex flex-col justify-between bg-primary-800 min-h-screen translate-x-full duration-300 ease-out z-50"
+    class="px-6 pt-6 pb-10 absolute w-full flex flex-col justify-between bg-primary-800 min-h-screen translate-x-full duration-300 ease-out z-50 sm:px-10"
     :class="{ 'translate-x-0 ': openMenu }"
   >
     <button
