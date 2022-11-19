@@ -1,6 +1,6 @@
 <template>
   <div
-    class="px-6 pt-6 pb-10 absolute w-full flex flex-col justify-between bg-primary-800 min-h-screen translate-x-full duration-300 ease-out z-50 sm:px-10"
+    class="px-6 pt-6 pb-10 absolute w-full flex flex-col justify-between bg-primary-800 min-h-screen translate-x-full duration-300 ease-out z-50 sm:px-10 sm:justify-center sm:gap-8"
     :class="{ 'translate-x-0 ': openMenu }"
   >
     <button
@@ -19,17 +19,11 @@
       :gameIsGoing="gameIsGoing"
       @send-options-region="emit('optionsRegion', $event)"
     />
-    <div class="flex flex-col gap-2">
-      <QuizStartGameBtn v-if="gameIsGoing" title="Stop Game" @click="stopGame">
-        <IconStop
-          class="w-6 h-6 absolute text-primary-100 right-4 top-1/2 -translate-y-1/2"
-        />
-      </QuizStartGameBtn>
-      <QuizStartGameBtn title="New Game" @click="startGame"
-        ><IconNewGame
-          class="w-6 h-6 absolute text-primary-100 right-4 top-1/2 -translate-y-1/2"
-      /></QuizStartGameBtn>
-    </div>
+
+    <QuizStartGameBtn title="Start Quiz" @click="startGame"
+      ><IconNewGame
+        class="w-6 h-6 absolute text-primary-100 right-4 top-1/2 -translate-y-1/2"
+    /></QuizStartGameBtn>
   </div>
 </template>
 
@@ -37,7 +31,6 @@
 const props = defineProps({
   openMenu: { type: Boolean },
   startGame: Function,
-  stopGame: Function,
   gameIsGoing: Boolean,
 });
 const emit = defineEmits(["closeMenu", "optionsRegion", "sendOptions"]);

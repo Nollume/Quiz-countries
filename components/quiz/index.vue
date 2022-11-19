@@ -8,9 +8,6 @@
       :countryIndex="countryIndex"
       :countries="countries"
       @openMenu="emit('openMenu', true)"
-      :pending="pending"
-      class="sm:row-start-3"
-      :class="{ 'sm:col-span-2': countryIndex === null }"
     />
     <QuizEndResult v-if="quizEnd" :correct="correct" class="sm:col-span-2" />
     <QuizScoreTimeInfo
@@ -38,6 +35,7 @@
       :userReaction="userReaction"
       class="sm:self-start"
     />
+
     <QuizBtnsNextTask
       :countryIndex="countryIndex"
       :gameIsGoing="gameIsGoing"
@@ -66,19 +64,21 @@ const nextQuestion = ref(false);
 const quizEnd = ref(false);
 let timeOutClear;
 
-const emit = defineEmits([
-  "closeMenu",
-  "startGame",
-  "stopGame",
-  "gameIsGoing",
-  "openMenu",
-]);
+const emit = defineEmits(["closeMenu", "startGame", "gameIsGoing", "openMenu"]);
 const props = defineProps({
   options: String,
   region: String,
 });
 
-const { data: countries, error, refresh, pending } = useFetch(url);
+/**
+ * Get Data
+ */
+
+const { data: countries, error, refresh } = useFetch(url);
+
+/**
+ * Generals
+ */
 
 const getRandomIndexCountry = () => {
   return Math.floor(Math.random() * countries.value.length);
@@ -95,11 +95,19 @@ const getCorrectLi = () => {
   );
   return correctAnswer;
 };
+
+/**
+ * manage colors
+ */
 const changeBgColor = () => {
   let allLi = document.querySelectorAll("li");
   allLi = Array.from(allLi);
   allLi.forEach((list) => (list.style.backgroundColor = "rgb(23 23 23)"));
 };
+
+/**
+ * progress bar
+ */
 const handleProgressBar = () => {
   if (time.value.toFixed(2) >= 0) {
     progressBar.value.style.transform = `scaleX(${time.value})`;
@@ -123,6 +131,11 @@ const handleProgressBar = () => {
     }
   }
 };
+
+/**
+ *
+ * quiz
+ */
 
 const userReaction = (country, e) => {
   clearTimeout(timeOutClear);
@@ -163,6 +176,22 @@ const startNewGame = () => {
   reset();
   getRandomCountry();
 };
+const summary = () => {
+  countryIndex.value = null;
+  quizEnd.value = true;
+};
+const reset = () => {
+  countryIndex.value = null;
+  notRepetiveCountries.value.length = 0;
+  optionsCountries.value.length = 0;
+  numberOfRound.value = 0;
+  correct.value = 0;
+  quizEnd.value = false;
+};
+
+/**
+ * get random values
+ */
 
 const getRandomCountry = () => {
   clearTimeout(timeOutClear);
@@ -216,28 +245,8 @@ const getRandomOptions = () => {
   shuffleOptions();
 };
 
-const reset = () => {
-  countryIndex.value = null;
-  notRepetiveCountries.value.length = 0;
-  optionsCountries.value.length = 0;
-  numberOfRound.value = 0;
-  correct.value = 0;
-  quizEnd.value = false;
-};
-const stopGame = () => {
-  reset();
-  emit("closeMenu", false);
-  gameIsGoing.value = false;
-  emit("gameIsGoing", gameIsGoing.value);
-};
-const summary = () => {
-  countryIndex.value = null;
-  quizEnd.value = true;
-};
-
 onMounted(() => {
   emit("startGame", startNewGame);
-  emit("stopGame", stopGame);
 });
 
 watchEffect(() => {
@@ -245,6 +254,7 @@ watchEffect(() => {
     url.value = "/api/countries";
   } else url.value = `/api/region/${props.region}`;
   reset();
+
   refresh();
 });
 </script>
