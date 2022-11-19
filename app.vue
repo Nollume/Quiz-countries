@@ -1,14 +1,7 @@
 <template>
   <div
-    class="min-h-screen bg-primary-800 text-primary-100 relative flex gap-4 overflow-hidden lg:max-w-[55rem] lg:mx-auto "
+    class="min-h-screen bg-primary-800 text-primary-100 relative flex gap-4 overflow-hidden lg:max-w-[55rem] lg:mx-auto"
   >
-    <div
-      v-if="!openMenu"
-      @click="openMenu = true"
-      class="absolute w-8 h-8 right-6 top-4 z-40 p-0.5 border border-accent rounded-md cursor-pointer"
-    >
-      <IconMenu />
-    </div>
     <Menu
       :openMenu="openMenu"
       @closeMenu="openMenu = $event"
@@ -25,6 +18,7 @@
       @startGame="startGame = $event"
       @stopGame="stopGame = $event"
       @gameIsGoing="gameIsGoing = $event"
+      @openMenu="openMenu = $event"
     />
   </div>
 </template>

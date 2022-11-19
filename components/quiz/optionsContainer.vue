@@ -1,5 +1,5 @@
 <template>
-  <ul class="grid gap-1 mb-4 sm:mb-0 md:gap-2 md:grid-cols-2">
+  <ul class="grid gap-1 mb-4 sm:mb-0 sm:h-60 sm:gap-2 md:grid-cols-2">
     <li
       class="relative flex items-center gap-2 border border-accent rounded-md bg-primary-900 duration-300 active:opacity-80 hover:opacity-80 overflow-hidden cursor-pointer md:flex-col"
       v-for="(country, index) in optionsCountries"
@@ -14,7 +14,7 @@
           {{ OptionsLetters(index) }}
         </p>
       </div>
-      <p class="md:my-auto">
+      <p class="md:p-4 md:my-auto">
         {{ countries[country].name?.common }}
       </p>
     </li>

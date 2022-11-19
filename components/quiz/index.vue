@@ -1,16 +1,16 @@
 <template>
   <div
     v-if="!error"
-    class="w-full min-h-screen px-6 flex flex-col gap-2 justify-between relative sm:px-10 sm:grid sm:grid-cols-2 sm:gap-x-4 sm:gap-y-2 sm:py-20 lg:py-40"
+    class="w-full min-h-screen px-6 flex flex-col gap-2 justify-between relative sm:px-10 sm:grid sm:place-content-center sm:grid-cols-2 sm:gap-x-4 sm:gap-y-8 sm:py-20 lg:py-40"
   >
     <QuizHintContainer
       :options="options"
-      :region="region"
       :countryIndex="countryIndex"
       :countries="countries"
-      :startNewGame="startNewGame"
+      @openMenu="emit('openMenu', true)"
       :pending="pending"
-      class="sm:row-start-3 sm:row-span-2 "
+      class="sm:row-start-3"
+      :class="{ 'sm:col-span-2': countryIndex === null }"
     />
     <QuizEndResult v-if="quizEnd" :correct="correct" class="sm:col-span-2" />
     <QuizScoreTimeInfo
@@ -36,7 +36,7 @@
       :optionsCountries="optionsCountries"
       :countries="countries"
       :userReaction="userReaction"
-      class="sm:self-start md:min-h-[20rem]"
+      class="sm:self-start"
     />
     <QuizBtnsNextTask
       :countryIndex="countryIndex"
@@ -66,7 +66,13 @@ const nextQuestion = ref(false);
 const quizEnd = ref(false);
 let timeOutClear;
 
-const emit = defineEmits(["closeMenu", "startGame", "stopGame", "gameIsGoing"]);
+const emit = defineEmits([
+  "closeMenu",
+  "startGame",
+  "stopGame",
+  "gameIsGoing",
+  "openMenu",
+]);
 const props = defineProps({
   options: String,
   region: String,
