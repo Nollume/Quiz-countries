@@ -142,10 +142,14 @@ const userReaction = (country, e) => {
   if (!userAnswered.value) {
     userAnswered.value = true;
     const li = e.target.closest("li");
+    li.classList.remove("bounce");
+    li.classList.remove("wrong");
+    li.style.zIndex = "0";
 
     if (country === countryIndex.value) {
       correct.value++;
       li.style.backgroundColor = "rgb(22 163 74)";
+      li.classList.add("bounce");
 
       if (numberOfRound.value < 20) {
         nextQuestion.value = true;
@@ -154,7 +158,10 @@ const userReaction = (country, e) => {
         emit("gameIsGoing", gameIsGoing.value);
       }
     } else {
+      li.style.zIndex = "2";
+
       li.style.backgroundColor = "rgb(239 68 68)";
+      li.classList.add("wrong");
       getCorrectLi().style.backgroundColor = "rgb(22 163 74)";
 
       if (numberOfRound.value < 20) {

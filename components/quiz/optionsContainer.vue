@@ -14,7 +14,7 @@
           {{ OptionsLetters(index) }}
         </p>
       </div>
-      <p class="md:p-4 md:my-auto">
+      <p class="md:px-4 md:py-0.5 md:my-auto">
         {{ countries[country].name?.common }}
       </p>
     </li>

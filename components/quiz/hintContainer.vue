@@ -1,7 +1,7 @@
 <template>
   <div
     class="mb-auto relative h-60 p-4 mt-16 text-2xl grid place-items-center border border-accent rounded-md bg-primary-900 sm:mt-0 sm:row-start-3"
-    :class="{ 'sm:col-span-2': countryIndex === null }"
+    :class="{ 'sm:col-span-2 sm:row-start-1': countryIndex === null }"
   >
     <div v-if="countryIndex !== null">
       <img
