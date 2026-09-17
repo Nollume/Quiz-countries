@@ -1,10 +1,17 @@
-// https://v3.nuxtjs.org/api/configuration/nuxt.config
+import tailwindcss from '@tailwindcss/vite';
+
 export default defineNuxtConfig({
-  modules: ["@nuxtjs/tailwindcss"],
-  app: {
-    head: {
-      title: "Countries quiz",
-      meta: [{ name: "description", content: "Countries Quiz" }],
-    },
-  },
+	compatibilityDate: '2026-09-15',
+	css: ['~/assets/css/main.css'],
+	vite: { plugins: [tailwindcss()] },
+	runtimeConfig: {
+		restCountriesApiKey: process.env.NUXT_REST_COUNTRIES_API_KEY,
+	},
+	app: {
+		head: {
+			title: 'Countries quiz',
+			htmlAttrs: { lang: 'en' },
+			meta: [{ name: 'description', content: 'Countries Quiz' }],
+		},
+	},
 });

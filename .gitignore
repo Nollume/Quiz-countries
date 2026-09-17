@@ -5,4 +5,9 @@ node_modules
 .cache
 .output
 .env
+.env.*
+!.env.example
+coverage
+test-results
+playwright-report
 dist
