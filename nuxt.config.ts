@@ -5,7 +5,7 @@ export default defineNuxtConfig({
 	css: ['~/assets/css/main.css'],
 	vite: { plugins: [tailwindcss()] },
 	runtimeConfig: {
-		restCountriesApiKey: process.env.NUXT_REST_COUNTRIES_API_KEY,
+		restCountriesApiKey: '',
 	},
 	app: {
 		head: {
